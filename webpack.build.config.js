@@ -22,9 +22,6 @@ module.exports = [
         externals: {
             'vue': 'Vue'
         },
-        devServer: {
-            contentBase: './dist'
-        },
         module: {
             rules: [
                 {
@@ -89,7 +86,7 @@ module.exports = [
             ]
         },
         output: {
-            path: path.join(__dirname, "dist"),
+            path: path.join(__dirname, "../../dist"),
             filename: "front.js"
         },
         plugins: [
@@ -106,9 +103,6 @@ module.exports = [
         mode: 'production',
         externals: {
             'vue': 'Vue'
-        },
-        devServer: {
-            contentBase: './dist'
         },
         module: {
             rules: [
@@ -163,7 +157,7 @@ module.exports = [
             ]
         },
         output: {
-            path: path.join(__dirname, "dist"),
+            path: path.join(__dirname, "../../dist"),
             filename: "manager.js"
         },
         plugins: [
@@ -182,9 +176,6 @@ module.exports = [
         externals: {
             'vue': 'Vue'
         },
-        devServer: {
-            contentBase: './dist'
-        },
         module: {
             rules: [
                 {
@@ -253,7 +244,7 @@ module.exports = [
             ]
         },
         output: {
-            path: path.join(__dirname, "dist"),
+            path: path.join(__dirname, "../../dist"),
             filename: "front-ie.js"
         },
         plugins: [
@@ -271,9 +262,6 @@ module.exports = [
         mode: 'production',
         externals: {
             'vue': 'Vue'
-        },
-        devServer: {
-            contentBase: './dist'
         },
         module: {
             rules: [
@@ -332,7 +320,7 @@ module.exports = [
             ]
         },
         output: {
-            path: path.join(__dirname, "dist"),
+            path: path.join(__dirname, "../../dist"),
             filename: "manager-ie.js"
         },
         plugins: [
