@@ -4,6 +4,7 @@ const inquirer = require('inquirer');
 const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
+const { exec } = require('child_process');
 
 const server = 'http://localhost:3000/api/v1'
 const userPrefPath = path.join(process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Preferences' : '/var/local'), 'weweb_upload')
@@ -245,6 +246,25 @@ const uploadToS3 = async function (url, data) {
     }
 }
 
+/*=============================================m_ÔÔ_m=============================================\
+  BUILD
+\================================================================================================*/
+const build = function () {
+    return new Promise(function (resolve, reject) {
+        exec('webpack --config node_modules/weweb-client/webpack.build.config.js -p --env=build --display=none', (error) => {
+            if (error) {
+                console.error(error);
+
+
+                return reject();
+            }
+
+
+            return resolve();
+        });
+    });
+}
+
 
 
 const run = async function () {
@@ -369,38 +389,6 @@ const run = async function () {
 
 
     /*=============================================m_ÔÔ_m=============================================\
-      GET FILES
-    \================================================================================================*/
-    //Get front.js
-    let frontJS = getFile('./dist/front.js');
-    if (!frontJS) {
-        console.log('\x1b[41mError : ./dist/front.js not found. Please make sure you ran \'yarn build\' before\x1b[0m')
-        return
-    }
-
-    //Get manager.js
-    let managerJS = getFile('./dist/manager.js');
-    if (!managerJS) {
-        console.log('\x1b[41mError : ./dist/manager.js not found. Please make sure you ran \'yarn build\' before\x1b[0m')
-        return
-    }
-    //Get front-ie.js
-    let frontIEJS = getFile('./dist/front-ie.js');
-    if (!frontIEJS) {
-        console.log('\x1b[41mError : ./dist/front-ie.js not found. Please make sure you ran \'yarn build\' before\x1b[0m')
-        return
-    }
-
-    //Get manager-ie.js
-    let managerIEJS = getFile('./dist/manager-ie.js');
-    if (!managerIEJS) {
-        console.log('\x1b[41mError : ./dist/manager-ie.js not found. Please make sure you ran \'yarn build\' before\x1b[0m')
-        return
-    }
-
-
-
-    /*=============================================m_ÔÔ_m=============================================\
       CREATE VERSION  
     \================================================================================================*/
     let options = {
@@ -430,6 +418,49 @@ const run = async function () {
         return
     }
 
+
+    /*=============================================m_ÔÔ_m=============================================\
+      BUILD
+    \================================================================================================*/
+    console.log('Building....');
+    try {
+        await build();
+        console.log('\x1b[42mBuild ok.\x1b[0m');
+    }
+    catch (error) {
+        return console.log('\x1b[41mError : build failed.\x1b[0m');
+    }
+
+
+    /*=============================================m_ÔÔ_m=============================================\
+      GET FILES
+    \================================================================================================*/
+    //Get front.js
+    let frontJS = getFile('./dist/front.js');
+    if (!frontJS) {
+        console.log('\x1b[41mError : ./dist/front.js not found. Please make sure you ran \'yarn build\' before\x1b[0m')
+        return
+    }
+
+    //Get manager.js
+    let managerJS = getFile('./dist/manager.js');
+    if (!managerJS) {
+        console.log('\x1b[41mError : ./dist/manager.js not found. Please make sure you ran \'yarn build\' before\x1b[0m')
+        return
+    }
+    //Get front-ie.js
+    let frontIEJS = getFile('./dist/front-ie.js');
+    if (!frontIEJS) {
+        console.log('\x1b[41mError : ./dist/front-ie.js not found. Please make sure you ran \'yarn build\' before\x1b[0m')
+        return
+    }
+
+    //Get manager-ie.js
+    let managerIEJS = getFile('./dist/manager-ie.js');
+    if (!managerIEJS) {
+        console.log('\x1b[41mError : ./dist/manager-ie.js not found. Please make sure you ran \'yarn build\' before\x1b[0m')
+        return
+    }
 
     /*=============================================m_ÔÔ_m=============================================\
       UPLOAD PREVIEW
