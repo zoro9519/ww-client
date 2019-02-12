@@ -418,7 +418,15 @@ const run = async function () {
         objectVersionId = resultData.objectVersionId;
     }
     catch (error) {
-        console.log('\x1b[41mError : \x1b[0m', error)
+        if (error.response && error.response.data && error.response.data.code == 'VERSION_ALREADY_TAKEN') {
+            console.log('\x1b[41mError : Version already exists.\x1b[0m');
+        }
+        else if (error.response && error.response.data && error.response.data.code == 'NAME_ALREADY_EXIST') {
+            console.log('\x1b[41mError : Name already used.\x1b[0m');
+        }
+        else {
+            console.log('\x1b[41mError : unknown error.\x1b[0m')
+        }
         return
     }
 
