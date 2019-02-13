@@ -9,7 +9,12 @@ if (!versionRegex.test(version)) {
     console.log('\x1b[41mError : package.json version must be an integer (got : ' + process.env.npm_package_version + ')\x1b[0m');
     return;
 }
-const componentName = process.env.npm_package_name + '_' + process.env.npm_package_version.replace(/[\.]/g, "_");
+
+const componentData = {
+    name: process.env.npm_package_name,
+    version: process.env.npm_package_version,
+    componentName: process.env.npm_package_name + '_' + process.env.npm_package_version.replace(/[\.]/g, "_")
+}
 
 module.exports = [
     /*=============================================m_ÔÔ_m=============================================\
@@ -44,8 +49,11 @@ module.exports = [
                     test: /\.(js|vue)$/,
                     loader: 'string-replace-loader',
                     options: {
-                        search: '__NAME__',
-                        replace: componentName,
+                        multiple: [
+                            { search: '__NAME__', replace: componentData.name },
+                            { search: '__VERSION__', replace: componentData.version },
+                            { search: '__COMPONENT_NAME__', replace: componentData.componentName }
+                        ]
                     }
                 },
                 // this will apply to both plain `.js` files
@@ -115,8 +123,11 @@ module.exports = [
                     test: /\.(js|vue)$/,
                     loader: 'string-replace-loader',
                     options: {
-                        search: '__NAME__',
-                        replace: componentName,
+                        multiple: [
+                            { search: '__NAME__', replace: componentData.name },
+                            { search: '__VERSION__', replace: componentData.version },
+                            { search: '__COMPONENT_NAME__', replace: componentData.componentName }
+                        ]
                     }
                 },
                 // this will apply to both plain `.js` files
@@ -198,8 +209,11 @@ module.exports = [
                     test: /\.(js|vue)$/,
                     loader: 'string-replace-loader',
                     options: {
-                        search: '__NAME__',
-                        replace: componentName,
+                        multiple: [
+                            { search: '__NAME__', replace: componentData.name },
+                            { search: '__VERSION__', replace: componentData.version },
+                            { search: '__COMPONENT_NAME__', replace: componentData.componentName }
+                        ]
                     }
                 },
                 // this will apply to both plain `.js` files
@@ -274,8 +288,11 @@ module.exports = [
                     test: /\.(js|vue)$/,
                     loader: 'string-replace-loader',
                     options: {
-                        search: '__NAME__',
-                        replace: componentName,
+                        multiple: [
+                            { search: '__NAME__', replace: componentData.name },
+                            { search: '__VERSION__', replace: componentData.version },
+                            { search: '__COMPONENT_NAME__', replace: componentData.componentName }
+                        ]
                     }
                 },
                 // this will apply to both plain `.js` files

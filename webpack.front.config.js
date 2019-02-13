@@ -3,7 +3,11 @@ const path = require('path')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const autoprefixer = require('autoprefixer');
 
-const componentName = process.env.npm_package_name;
+const componentData = {
+    name: process.env.npm_package_name,
+    version: process.env.npm_package_version,
+    componentName: process.env.npm_package_name
+}
 
 module.exports = function () {
     const config = {
@@ -45,8 +49,11 @@ module.exports = function () {
                     test: /\.(js|vue)$/,
                     loader: 'string-replace-loader',
                     options: {
-                        search: '__NAME__',
-                        replace: componentName,
+                        multiple: [
+                            { search: '__NAME__', replace: componentData.name },
+                            { search: '__VERSION__', replace: componentData.version },
+                            { search: '__COMPONENT_NAME__', replace: componentData.componentName }
+                        ]
                     }
                 },
                 // this will apply to both plain `.js` files
