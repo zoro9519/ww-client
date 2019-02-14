@@ -3,17 +3,10 @@ const path = require('path')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const autoprefixer = require('autoprefixer');
 
-const version = process.env.npm_package_version;
-const versionRegex = /^[\d\.]*$/g
-if (!versionRegex.test(version)) {
-    console.log('\x1b[41mError : package.json version must be an integer (got : ' + process.env.npm_package_version + ')\x1b[0m');
-    return;
-}
-
 const componentData = {
     name: process.env.npm_package_name,
-    version: process.env.npm_package_version,
-    componentName: process.env.npm_package_name + '_' + process.env.npm_package_version.replace(/[\.]/g, "_")
+    version: '',
+    componentName: process.env.npm_package_name
 }
 
 module.exports = function () {

@@ -10,10 +10,12 @@ if (!versionRegex.test(version)) {
     return;
 }
 
+const isSection = process.env.npm_package_type == 'section';
+
 const componentData = {
     name: process.env.npm_package_name,
-    version: process.env.npm_package_version,
-    componentName: process.env.npm_package_name + '_' + process.env.npm_package_version.replace(/[\.]/g, "_")
+    version: isSection ? process.env.npm_package_version : '',
+    componentName: process.env.npm_package_name + (isSection ? '_' + process.env.npm_package_version.replace(/[\.]/g, "_") : '')
 }
 
 module.exports = [

@@ -1,6 +1,6 @@
 {
     "name": "weweb-client",
-    "version": "1.0.14",
+    "version": "1.0.21",
     "description": "Weweb client",
     "main": "upload.js",
     "scripts": {},
@@ -32,6 +32,9 @@
     },
     "homepage": "https://github.com/WeWeb-Public/weweb-client#readme",
     "dependencies": {
+        "axios": "^0.18.0",
+        "inquirer": "^6.2.2",
+        "shelljs": "^0.8.3",
         "weweb-strip-block": "^0.0.2"
     },
     "devDependencies": {}

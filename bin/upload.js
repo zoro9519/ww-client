@@ -465,18 +465,20 @@ const run = async function () {
     /*=============================================m_ÔÔ_m=============================================\
       UPLOAD PREVIEW
     \================================================================================================*/
-    for (const sectionType of resultData.data) {
-        for (const preview of sectionType.previews) {
+    if (resultData.data) {
+        for (const sectionType of resultData.data) {
+            for (const preview of sectionType.previews) {
 
-            let previewFile = fs.readFileSync(preview.src);
-            if (!previewFile) {
-                console.log('\x1b[41mError : Preview upload error\x1b[0m')
-                return
-            }
+                let previewFile = fs.readFileSync(preview.src);
+                if (!previewFile) {
+                    console.log('\x1b[41mError : Preview upload error\x1b[0m')
+                    return
+                }
 
-            if (!await uploadToS3(preview.signedUrl, previewFile)) {
-                console.log('\x1b[41mError : Preview upload error\x1b[0m')
-                return
+                if (!await uploadToS3(preview.signedUrl, previewFile)) {
+                    console.log('\x1b[41mError : Preview upload error\x1b[0m')
+                    return
+                }
             }
         }
     }
