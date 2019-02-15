@@ -15,7 +15,7 @@ const isSection = process.env.npm_package_type == 'section';
 const componentData = {
     name: process.env.npm_package_name,
     version: isSection ? process.env.npm_package_version : '',
-    componentName: process.env.npm_package_name + (isSection ? '_' + process.env.npm_package_version.replace(/[\.]/g, "_") : '')
+    componentName: process.env.npm_package_name + (isSection ? '-' + process.env.npm_package_version.replace(/[\.]/g, "-") : '')
 }
 
 module.exports = [
