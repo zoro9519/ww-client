@@ -81,7 +81,7 @@ module.exports = function () {
                     ]
                 },
                 {
-                    test: /\.(png|jpg|gif)$/i,
+                    test: /\.(png|jpg|gif|svg)$/i,
                     use: [
                         {
                             loader: 'url-loader',
