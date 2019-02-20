@@ -522,6 +522,8 @@ const run = async function () {
         return
     }
 
+
+
     //Upload to S3
     if (!await uploadToS3(uploadUrl, managerJS)) {
         console.log('\x1b[41mError : Upload error.\x1b[0m')

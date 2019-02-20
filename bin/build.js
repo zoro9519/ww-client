@@ -2,6 +2,7 @@
 
 const { exec } = require('child_process');
 
+
 exec('webpack --config node_modules/weweb-client/webpack.build.config.js -p --env=build', (error, stdout, stderr) => {
     if (error) {
         console.error(error);
