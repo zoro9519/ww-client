@@ -395,7 +395,7 @@ const run = async function () {
         method: 'POST',
         headers: { 'wwauthmanagertoken': 'auth ' + userPref.token },
         url: getCreateVersionUrl(packageJson),
-        data: { data: sectionTypes, active: true, public: packageJson.wewebPublic, repository: packageJson.repository, version: packageJson.version } || {}
+        data: { data: sectionTypes, active: true, wewebPublic: packageJson.wewebPublic, publicStore: packageJson.publicStore, repository: packageJson.repository, version: packageJson.version } || {}
     }
 
     let resultData
