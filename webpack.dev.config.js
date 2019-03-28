@@ -2,12 +2,89 @@
 const path = require('path')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const autoprefixer = require('autoprefixer');
+const fs = require('fs')
 
 const componentData = {
     name: process.env.npm_package_name,
     version: '',
     componentName: process.env.npm_package_name
 }
+
+const packageJson = {
+    name: process.env.npm_package_name,
+    version: process.env.npm_package_version,
+    type: process.env.npm_package_type,
+    sectionTypes: []
+}
+
+if (packageJson.type.toLowerCase() == 'section') {
+    const basePath = './src/default_data';
+
+    //Get default data index
+    try {
+        packageJson.sectionTypes = fs.readFileSync(basePath + '/index.js', 'utf8');
+    } catch (error) {
+        console.log('\x1b[41mError : ' + basePath + '/index.js not found\x1b[0m');
+        return
+    }
+
+    //Eval default data index
+    try {
+        packageJson.sectionTypes = eval(packageJson.sectionTypes);
+        if (!packageJson.sectionTypes || !packageJson.sectionTypes.length) {
+            return
+        }
+    } catch (error) {
+        console.log('\x1b[41mError : ' + basePath + '/index.js incorrect format, or no data defined\x1b[0m');
+        return
+    }
+
+    //Parse section types
+    for (let sectionType of packageJson.sectionTypes) {
+        if (!sectionType.name) {
+            console.log('\x1b[33mWarning : name not set for ', sectionType + '\x1b[0m');
+            continue;
+        }
+
+        let data;
+
+        //Get data
+        try {
+            data = fs.readFileSync(basePath + '/' + sectionType.name + '/data.json');
+            data = JSON.parse(data);
+        } catch (error) {
+            console.log('\x1b[33mWarning : ' + basePath + '/' + sectionType.name + '/data.json' + ' not found or incorrect format\x1b[0m');
+            continue;
+        }
+
+        sectionType.defaultData = data;
+
+        //Get previews
+        sectionType.previews = [];
+        for (let i = 0; i < 10; i++) {
+            if (fs.existsSync(basePath + '/' + sectionType.name + '/preview_' + i + '.jpg')) {
+                sectionType.previews.push({
+                    src: basePath + '/' + sectionType.name + '/preview_' + i + '.jpg',
+                    name: 'preview_' + i + '.jpg'
+                });
+            }
+            if (fs.existsSync(basePath + '/' + sectionType.name + '/preview_' + i + '.png')) {
+                sectionType.previews.push({
+                    src: basePath + '/' + sectionType.name + '/preview_' + i + '.png',
+                    name: 'preview_' + i + '.png'
+                });
+            }
+        }
+    }
+
+}
+
+fs.writeFileSync('./node_modules/weweb-client/assets/info.json', JSON.stringify(packageJson), function (err) {
+    if (err) {
+        throw new Error();
+    }
+});
+
 
 module.exports = function () {
     const configManager = {
@@ -26,9 +103,9 @@ module.exports = function () {
                 "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization",
                 "Access-Control-Allow-Origin": "*"
             },
-			historyApiFallback: {
-			  index: 'index.html'
-			}
+            historyApiFallback: {
+                index: 'index.html'
+            }
         },
         module: {
             rules: [
@@ -111,9 +188,9 @@ module.exports = function () {
                 "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization",
                 "Access-Control-Allow-Origin": "*"
             },
-			historyApiFallback: {
-			  index: 'index.html'
-			}
+            historyApiFallback: {
+                index: 'index.html'
+            }
         },
         module: {
             rules: [
@@ -191,7 +268,7 @@ module.exports = function () {
         ]
     };
 
-    
+
     function findPara(param) {
         let result = '';
         process.argv.forEach((argv) => {
