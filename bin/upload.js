@@ -6,6 +6,8 @@ const fs = require('fs');
 const path = require('path');
 const { exec } = require('child_process');
 
+const wewebClientVersion = '1.0.30'
+
 const server = 'http://api.weweb.app/v1'
 const userPrefPath = path.join(process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Preferences' : '/var/local'), 'weweb_upload')
 const userPrefFilename = 'user_pref.json'

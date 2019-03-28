@@ -4,6 +4,8 @@ const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const autoprefixer = require('autoprefixer');
 const fs = require('fs')
 
+const wewebClientVersion = '1.0.30'
+
 const componentData = {
     name: process.env.npm_package_name,
     version: '',
@@ -11,6 +13,7 @@ const componentData = {
 }
 
 const packageJson = {
+    wewebClientVersion: wewebClientVersion,
     name: process.env.npm_package_name,
     version: process.env.npm_package_version,
     type: process.env.npm_package_type,
