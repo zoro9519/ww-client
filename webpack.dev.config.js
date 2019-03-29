@@ -118,6 +118,18 @@ module.exports = function () {
                     loader: 'vue-loader'
                 },
                 {
+                    test: /\.vue$/,
+                    loader: 'weweb-strip-block',
+                    options: {
+                        blocks: [
+                            {
+                                start: 'wwFront:start',
+                                end: 'wwFront:end'
+                            }
+                        ]
+                    }
+                },
+                {
                     test: /\.(js|vue)$/,
                     loader: 'string-replace-loader',
                     options: {
