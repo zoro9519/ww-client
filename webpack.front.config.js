@@ -21,7 +21,7 @@ const packageJson = {
 }
 
 if (packageJson.type.toLowerCase() == 'section') {
-    const basePath = '../../src/default_data';
+    const basePath = './src/default_data';
 
     //Get default data index
     try {
@@ -82,7 +82,7 @@ if (packageJson.type.toLowerCase() == 'section') {
 
 }
 
-fs.writeFileSync('./assets/info.json', JSON.stringify(packageJson), function (err) {
+fs.writeFileSync('./node_modules/weweb-client/assets/info.json', JSON.stringify(packageJson), function (err) {
     if (err) {
         throw new Error();
     }
@@ -109,12 +109,12 @@ module.exports = function () {
         port = null;
     }
 
-    const configManager = {
-        name: 'manager',
+    const configFront = {
+        name: 'front',
         entry: [
             'webpack-dev-server/client?https://localhost:' + port, // WebpackDevServer host and port
             'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors
-            '../../src/index.js'
+            './src/index.js'
         ],
         mode: 'development',
         externals: {
@@ -122,7 +122,7 @@ module.exports = function () {
         },
         devtool: 'inline-source-map',
         devServer: {
-            contentBase: './assets',
+            contentBase: './node_modules/weweb-client/assets',
             hot: true,
             headers: {
                 "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
@@ -135,10 +135,21 @@ module.exports = function () {
         },
         module: {
             rules: [
-
                 {
                     test: /\.vue$/,
                     loader: 'vue-loader'
+                },
+                {
+                    test: /\.vue$/,
+                    loader: 'weweb-strip-block',
+                    options: {
+                        blocks: [
+                            {
+                                start: 'wwManager:start',
+                                end: 'wwManager:end'
+                            }
+                        ]
+                    }
                 },
                 {
                     test: /\.(js|vue)$/,
@@ -172,7 +183,7 @@ module.exports = function () {
                                 }
                             }
                         },
-                        'sass-loader'
+                        'sass-loader',
                     ]
                 },
                 {
@@ -190,7 +201,7 @@ module.exports = function () {
         },
         output: {
             path: path.join(__dirname, "dist"),
-            filename: "manager.js"
+            filename: "front.js"
         },
         plugins: [
             // make sure to include the plugin for the magic
@@ -199,13 +210,13 @@ module.exports = function () {
     };
 
     if (port) {
-        configManager.devServer.port = port;
-        configManager.output.publicPath = 'https://localhost:' + port + '/';
+        configFront.devServer.port = port;
+        configFront.output.publicPath = 'https://localhost:' + port + '/';
     }
     else {
         console.log('\x1b[41mPLEASE DEFINE A PORT (ex : 8080)\x1b[0m');
         return null;
     }
 
-    return [configManager];
+    return [configFront];
 }

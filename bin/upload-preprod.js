@@ -8,9 +8,9 @@ const { exec } = require('child_process');
 
 const wewebClientVersion = '1.0.30'
 
-const server = 'http://api.weweb.app/v1'
+const server = 'http://api.weweb.dev/v1'
 const userPrefPath = path.join(process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Preferences' : '/var/local'), 'weweb_upload')
-const userPrefFilename = 'user_pref.json'
+const userPrefFilename = 'user_pref_preprod.json'
 
 let objectVersionId
 
@@ -253,7 +253,7 @@ const uploadToS3 = async function (url, data) {
 \================================================================================================*/
 const build = function () {
     return new Promise(function (resolve, reject) {
-        exec('node node_modules/weweb-client/bin/build.js', (error) => {
+        exec('webpack --config node_modules/weweb-client/webpack.build.config.js -p --env=build --display=none', (error) => {
             if (error) {
                 console.error(error);
 
