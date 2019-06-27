@@ -4,7 +4,7 @@ const inquirer = require('inquirer');
 const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
-const { exec } = require('child_process');
+var shell = require("shelljs");
 
 const wewebClientVersion = '1.0.30'
 
@@ -253,21 +253,103 @@ const uploadToS3 = async function (url, data) {
 \================================================================================================*/
 const build = function () {
     return new Promise(function (resolve, reject) {
-        exec('node node_modules/weweb-client/bin/build.js', (error) => {
-            if (error) {
-                console.error(error);
 
-
+        shell.cd("./node_modules/weweb-client");
+        shell.exec("node bin/_build_upload.js", function (code, stdout, stderr) {
+            if (code != 0) {
+                console.log(stderr);
                 return reject();
             }
 
-
+            shell.cd("../../");
             return resolve();
         });
+
+
+        // exec('node node_modules/weweb-client/bin/build.js', (error) => {
+        //     if (error) {
+        //         console.error(error);
+
+
+        //         return reject();
+        //     }
+
+
+        //     return resolve();
+        // });
     });
 }
 
 
+/*=============================================m_ÔÔ_m=============================================\
+  CREATE VERSION
+\================================================================================================*/
+const createVersion = async function (userPref, packageJson, sectionTypes, retry) {
+    let options = {
+        method: 'POST',
+        headers: { 'wwauthmanagertoken': 'auth ' + userPref.token },
+        url: getCreateVersionUrl(packageJson),
+        data: { data: sectionTypes, active: true, wewebPublic: packageJson.wewebPublic, publicStore: packageJson.publicStore, repository: packageJson.repository, version: packageJson.version } || {}
+    }
+
+    let resultData
+
+    try {
+        let response = await axios(options);
+        resultData = response.data;
+        objectVersionId = resultData.objectVersionId;
+
+        return resultData
+    }
+    catch (error) {
+        if (error.response && error.response.data && error.response.data.code == 'VERSION_ALREADY_TAKEN') {
+            console.log('\x1b[41mError : Version already exists.\x1b[0m');
+            console.log('Upgrading version...');
+            if (!upgradeVersion(packageJson)) {
+                console.log('\x1b[41mError : Cannot update package.json version...\x1b[0m');
+                return false;
+            }
+
+            let resultData
+            if (resultData = await createVersion(userPref, packageJson, sectionTypes, true)) {
+                return resultData
+            }
+            return false;
+        }
+        else if (error.response && error.response.data && error.response.data.code == 'NAME_ALREADY_EXIST') {
+            console.log('\x1b[41mError : Name already used.\x1b[0m');
+        }
+        else {
+            console.log('\x1b[41mError : unknown error.\x1b[0m')
+        }
+        return false
+    }
+}
+
+/*=============================================m_ÔÔ_m=============================================\
+  UPGRADE VERSION
+\================================================================================================*/
+const upgradeVersion = function (packageJson) {
+    try {
+        let version = packageJson.version.split('.');
+        let base = parseInt(version[version.length - 1]);
+        base = base + 1;
+        version[version.length - 1] = base + ''
+        packageJson.version = version.join('.');
+
+        console.log("\x1b[42mNew version : " + packageJson.version + "\x1b[0m");
+
+        fs.writeFileSync('./package.json', JSON.stringify(packageJson, null, 2), function (err) {
+            if (err) {
+                throw new Error();
+            }
+        });
+
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
 
 const run = async function () {
 
@@ -393,31 +475,9 @@ const run = async function () {
     /*=============================================m_ÔÔ_m=============================================\
       CREATE VERSION  
     \================================================================================================*/
-    let options = {
-        method: 'POST',
-        headers: { 'wwauthmanagertoken': 'auth ' + userPref.token },
-        url: getCreateVersionUrl(packageJson),
-        data: { data: sectionTypes, active: true, wewebPublic: packageJson.wewebPublic, publicStore: packageJson.publicStore, repository: packageJson.repository, version: packageJson.version } || {}
-    }
-
-    let resultData
-
-    try {
-        let response = await axios(options);
-        resultData = response.data;
-        objectVersionId = resultData.objectVersionId;
-    }
-    catch (error) {
-        if (error.response && error.response.data && error.response.data.code == 'VERSION_ALREADY_TAKEN') {
-            console.log('\x1b[41mError : Version already exists.\x1b[0m');
-        }
-        else if (error.response && error.response.data && error.response.data.code == 'NAME_ALREADY_EXIST') {
-            console.log('\x1b[41mError : Name already used.\x1b[0m');
-        }
-        else {
-            console.log('\x1b[41mError : unknown error.\x1b[0m')
-        }
-        return
+    const resultData = await createVersion(userPref, packageJson, sectionTypes)
+    if (!resultData) {
+        return;
     }
 
 
