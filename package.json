@@ -1,6 +1,6 @@
 {
     "name": "weweb-client",
-    "version": "1.0.37",
+    "version": "1.0.39",
     "description": "Weweb client",
     "main": "upload.js",
     "scripts": {
@@ -50,6 +50,7 @@
         "inquirer": "^6.2.2",
         "node-sass": "^4.10.0",
         "postcss": "^7.0.6",
+        "rxjs-compat": "^6.5.2",
         "sass-loader": "^7.1.0",
         "shelljs": "^0.8.3",
         "string-replace-loader": "^2.1.1",

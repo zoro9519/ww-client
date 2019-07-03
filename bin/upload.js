@@ -181,6 +181,9 @@ const getUploadRequestUrl = function (packageJson) {
         case 'section':
             return server + '/sectionbases/' + packageJson.name + '/request_upload'
             break;
+        case 'plugin':
+            return server + '/plugins/' + packageJson.name + '/request_upload'
+            break;
         default:
             return null
             break;
@@ -197,6 +200,9 @@ const getCreateVersionUrl = function (packageJson) {
             break;
         case 'section':
             return server + '/sectionbases/' + packageJson.name + '/create_version'
+            break;
+        case 'plugin':
+            return server + '/plugins/' + packageJson.name + '/create_version'
             break;
         default:
             return null
@@ -463,13 +469,10 @@ const run = async function () {
         }
     }
 
-
     /*=============================================m_ÔÔ_m=============================================\
       SAVE USER PREF
     \================================================================================================*/
     writeUserPref(userPref);
-
-
 
 
     /*=============================================m_ÔÔ_m=============================================\
