@@ -8,7 +8,7 @@ var shell = require("shelljs");
 
 const wewebClientVersion = '1.0.30'
 
-const server = 'http://api.weweb.dev/v1'
+const server = 'http://localhost:3000/v1'
 const userPrefPath = path.join(process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Preferences' : '/var/local'), 'weweb_upload')
 const userPrefFilename = 'user_pref.json'
 
@@ -364,6 +364,27 @@ const run = async function () {
     let userPref
     let packageJson
     let sectionTypes
+
+    /*=============================================m_ÔÔ_m=============================================\
+      DELETE DIST FILES
+    \================================================================================================*/
+    try {
+        const base = './dist/'
+        if (fs.existsSync(base + 'front.js')) {
+            fs.unlinkSync(base + 'front.js');
+        }
+        if (fs.existsSync(base + 'manager.js')) {
+            fs.unlinkSync(base + 'manager.js');
+        }
+        if (fs.existsSync(base + 'front-ie.js')) {
+            fs.unlinkSync(base + 'front-ie.js');
+        }
+        if (fs.existsSync(base + 'manager-ie.js')) {
+            fs.unlinkSync(base + 'manager-ie.js');
+        }
+    } catch (err) {
+        console.error(err)
+    }
 
     /*=============================================m_ÔÔ_m=============================================\
       GET OBJECT NAME FROM PACKAGE.JSON

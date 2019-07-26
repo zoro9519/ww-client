@@ -67,7 +67,7 @@ module.exports = [
                     loader: 'vue-loader'
                 },
                 {
-                    test: /\.vue$/,
+                    test: /\.(js|vue|css|scss)$/,
                     loader: 'weweb-strip-block',
                     options: {
                         blocks: [
@@ -153,7 +153,7 @@ module.exports = [
                     loader: 'vue-loader'
                 },
                 {
-                    test: /\.vue$/,
+                    test: /\.(js|vue|css|scss)$/,
                     loader: 'weweb-strip-block',
                     options: {
                         blocks: [
@@ -239,7 +239,7 @@ module.exports = [
                     loader: 'vue-loader'
                 },
                 {
-                    test: /\.vue$/,
+                    test: /\.(js|vue|css|scss)$/,
                     loader: 'weweb-strip-block',
                     options: {
                         blocks: [
@@ -330,7 +330,7 @@ module.exports = [
                     loader: 'vue-loader'
                 },
                 {
-                    test: /\.vue$/,
+                    test: /\.(js|vue|css|scss)$/,
                     loader: 'weweb-strip-block',
                     options: {
                         blocks: [
