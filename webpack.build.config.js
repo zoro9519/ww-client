@@ -267,8 +267,8 @@ module.exports = [
                     test: /\.js$/,
                     loader: 'babel-loader',
                     options: {
-                        presets: ["babel-preset-es2015"],
-                        plugins: ['transform-async-to-generator']
+                        presets: ["@babel/preset-env"],
+                        plugins: ['@babel/transform-async-to-generator']
                     }
                 },
                 // this will apply to both plain `.css` files
@@ -358,8 +358,8 @@ module.exports = [
                     test: /\.js$/,
                     loader: 'babel-loader',
                     options: {
-                        presets: ["babel-preset-es2015"],
-                        plugins: ['transform-async-to-generator']
+                        presets: ["@babel/preset-env"],
+                        plugins: ['@babel/transform-async-to-generator']
                     }
                 },
                 // this will apply to both plain `.css` files

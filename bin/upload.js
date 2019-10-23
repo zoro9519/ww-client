@@ -8,11 +8,39 @@ var shell = require("shelljs");
 
 const wewebClientVersion = '1.0.30'
 
-const server = 'http://api.weweb.app/v1'
-const userPrefPath = path.join(process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Preferences' : '/var/local'), 'weweb_upload')
-const userPrefFilename = 'user_pref.json'
+const targets = ['prod', 'preprod', 'staging', 'local']
+let target = 'prod';
+let server = 'http://api.weweb.app/v1'
 
-let objectVersionId
+for (let i = 0; i < process.argv.length; i++) {
+    if (targets.indexOf(process.argv[i]) !== -1) {
+        target = process.argv[i]
+        break;
+    }
+}
+
+switch (target) {
+    case 'preprod':
+        server = 'http://api.weweb.dev/v1';
+        break;
+    case 'staging':
+        server = 'http://api.weweb.space/v1';
+        break;
+    case 'local':
+        server = 'http://localhost:3000/v1';
+        break;
+    default:
+        server = 'http://api.weweb.app/v1'
+        break;
+}
+
+
+console.log('\x1b[34mUploading to ' + target + ' (' + server + ')\x1b[0m');
+
+const userPrefPath = path.join(process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Preferences' : '/var/local'), 'weweb_upload')
+const userPrefFilename = 'user_pref.json';
+
+let objectVersionId;
 
 
 /*=============================================m_ÔÔ_m=============================================\

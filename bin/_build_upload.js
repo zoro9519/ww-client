@@ -9,4 +9,11 @@ webpack(webpackConfig, function (err, stats) {
         return;
     }
 
+    
+
+    if (stats.stats[0].compilation.errors && stats.stats[0].compilation.errors.length) {
+        console.log(stats.stats[0].compilation.errors);
+        return false;
+    }
+
 });

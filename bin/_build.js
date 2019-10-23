@@ -9,6 +9,14 @@ webpack(webpackConfig, function (err, stats) {
         return;
     }
 
-    console.log('\x1b[42mBuild ok.\x1b[0m');
-    console.log('\x1b[32mYou can now upload this object using "yarn upload" or "npm run upload" \x1b[0m');
+
+
+    if (stats.stats[0].compilation.errors && stats.stats[0].compilation.errors.length) {
+        console.log(stats.stats[0].compilation.errors);
+        return false;
+    }
+    else {
+        console.log('\x1b[42mBuild ok.\x1b[0m');
+        console.log('\x1b[32mYou can now upload this object using "yarn upload" or "npm run upload" \x1b[0m');
+    }
 });
