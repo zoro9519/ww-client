@@ -114,7 +114,7 @@ module.exports = function () {
         entry: [
             'webpack-dev-server/client?https://localhost:' + port, // WebpackDevServer host and port
             'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors
-            '../../src/index.js'
+            './assets/index.js'
         ],
         mode: 'development',
         externals: {

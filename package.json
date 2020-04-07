@@ -1,16 +1,11 @@
 {
     "name": "weweb-client",
-    "version": "1.0.50",
+    "version": "1.1.0",
     "description": "Weweb client",
-    "main": "upload.js",
-    "scripts": {
-        "weweb-build2": "bin/build2.js"
-    },
     "bin": {
-        "weweb-upload": "bin/upload.js",
         "weweb-build": "bin/build.js",
         "weweb-serve": "bin/serve.js",
-        "weweb-serve-front": "bin/serve-front.js"
+        "weweb-config": "bin/create-config.js"
     },
     "repository": {
         "type": "git",
