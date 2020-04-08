@@ -81,7 +81,18 @@ const content = config.content || {};
 const upsales = config.upsales || {};
 const cmsOptions = config.content || {};
 
-let wwObjectContent = package.type.toLowerCase() != 'wwobject' ? '' : `
+let indexContent = '';
+
+if (package.type.toLowerCase() == 'plugin') {
+    indexContent = `import component from '../../../${componentPath}'
+
+const name = "__NAME__";
+const version = '__VERSION__';
+
+wwLib.wwPlugins.add(name, plugin.init)
+`
+} else {
+    let wwObjectContent = package.type.toLowerCase() != 'wwobject' ? '' : `
         wwLib.wwObject.register({
             content: ${JSON.stringify(content)},
             upsales: ${JSON.stringify(upsales)},
@@ -91,7 +102,7 @@ let wwObjectContent = package.type.toLowerCase() != 'wwobject' ? '' : `
         });
 `
 
-const indexContent = `import component from '../../../${componentPath}'
+    indexContent = `import component from '../../../${componentPath}'
 
 const name = "__NAME__";
 const version = '__VERSION__';
@@ -120,6 +131,9 @@ if (!addComponent()) {
     }, 10);
 }
 `
+}
+
+
 
 fs.writeFileSync(tempIndexJs, indexContent)
 
