@@ -79,12 +79,12 @@ if (fs.existsSync(tempIndexJs)) {
 
 const content = config.content || {};
 const upsales = config.upsales || {};
-const cmsOptions = config.content || {};
+const cmsOptions = config.cmsOptions || {};
 
 let indexContent = '';
 
 if (package.type.toLowerCase() == 'plugin') {
-    indexContent = `import component from '../../../${componentPath}'
+    indexContent = `import plugin from '../../../${componentPath}'
 
 const name = "__NAME__";
 const version = '__VERSION__';
@@ -115,7 +115,7 @@ const addComponent = function () {
         window.vm.addComponent({
             name: name,
             version: version,
-            content: wwObject
+            content: component
         });
 
         return true;
