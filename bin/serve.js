@@ -1,12 +1,12 @@
 #! /usr/bin/env node
 
-const port = process.argv[2] || '8080'
+const port = process.argv[2] || "8080";
 
-const fs = require('fs');
+const fs = require("fs");
 const shell = require("shelljs");
 
 //get package.json
-let package = fs.readFileSync('./package.json');
+let package = fs.readFileSync("./package.json");
 
 try {
     package = JSON.parse(package);
@@ -15,7 +15,7 @@ try {
     return;
 }
 
-const types = ['section', 'wwobject', 'plugin'];
+const types = ["section", "wwobject", "plugin"];
 if (!package.type) {
     console.log('\x1b[41mError : "type" not present in package.json.\x1b[0m');
     console.log('\x1b[41mShould be one of : "section", "wwobject", "plugin".\x1b[0m');
@@ -26,44 +26,42 @@ if (types.indexOf(package.type.toLowerCase()) === -1) {
     return;
 }
 
-
 //get ww-config.json
-if (!fs.existsSync('./ww-config.json')) {
+if (!fs.existsSync("./ww-config.json")) {
     console.log('\x1b[41mError : "./ww-config.json" was not found.\x1b[0m');
     console.log('\x1b[44mTo create "./ww-config.json" use "yarn create-config".\x1b[0m');
-    return
+    return;
 }
 
-let config = fs.readFileSync('./ww-config.json');
+let config = fs.readFileSync("./ww-config.json");
 
 try {
     config = JSON.parse(config);
 } catch (error) {
     console.log('\x1b[41mError : unable to parse "./ww-config.json".\x1b[0m');
-    return
+    return;
 }
 
 //Read componentPath
-let componentPath = '';
+let componentPath = "";
 if (!config.componentPath) {
     switch (package.type.toLowerCase()) {
-        case 'section':
-            componentPath = './src/section.vue'
+        case "section":
+            componentPath = "./src/section.vue";
             break;
-        case 'wwobject':
-            componentPath = './src/wwObject.vue'
+        case "wwobject":
+            componentPath = "./src/wwObject.vue";
             break;
-        case 'plugin':
-            componentPath = './src/plugin.vue'
+        case "plugin":
+            componentPath = "./src/plugin.vue";
             break;
         default:
-            componentPath = './src/section.vue'
+            componentPath = "./src/section.vue";
             break;
     }
 
     console.log('\x1b[44mProperty "componentPath" not found in "ww-config.json". Using "' + componentPath + '".\x1b[0m');
-}
-else {
+} else {
     componentPath = config.componentPath;
 }
 
@@ -72,35 +70,40 @@ if (!fs.existsSync(componentPath)) {
 }
 
 //Create index.js
-const tempIndexJs = './node_modules/weweb-client/assets/index.js'
+const tempIndexJs = "./node_modules/weweb-client/assets/index.js";
 if (fs.existsSync(tempIndexJs)) {
-    fs.unlinkSync(tempIndexJs)
+    fs.unlinkSync(tempIndexJs);
 }
 
 const content = config.content || {};
 const upsales = config.upsales || {};
+const meta = config.meta || {};
 const cmsOptions = config.cmsOptions || {};
 
-let indexContent = '';
+let indexContent = "";
 
-if (package.type.toLowerCase() == 'plugin') {
+if (package.type.toLowerCase() == "plugin") {
     indexContent = `import plugin from '../../../${componentPath}'
 
 const name = "__NAME__";
 const version = '__VERSION__';
 
 wwLib.wwPlugins.add(name, plugin.init)
-`
+`;
 } else {
-    let wwObjectContent = package.type.toLowerCase() != 'wwobject' ? '' : `
+    let wwObjectContent =
+        package.type.toLowerCase() != "wwobject"
+            ? ""
+            : `
         wwLib.wwObject.register({
             content: ${JSON.stringify(content)},
+            meta: ${JSON.stringify(meta)},
             upsales: ${JSON.stringify(upsales)},
             /* wwManager:start */
             cmsOptions: ${JSON.stringify(cmsOptions)}
             /* wwManager:end */
         });
-`
+`;
 
     indexContent = `import component from '../../../${componentPath}'
 
@@ -130,12 +133,10 @@ if (!addComponent()) {
         }
     }, 10);
 }
-`
+`;
 }
 
-
-
-fs.writeFileSync(tempIndexJs, indexContent)
+fs.writeFileSync(tempIndexJs, indexContent);
 
 shell.cd("node_modules/weweb-client/");
 shell.exec("webpack-dev-server --config webpack.dev.config.js -d --inline --env=dev --hot --https --disableHostCheck=true --client-log-level=error --port=" + port);

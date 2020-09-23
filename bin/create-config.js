@@ -1,12 +1,12 @@
 #! /usr/bin/env node
-const fs = require('fs');
+const fs = require("fs");
 
-if (!fs.existsSync('./package.json')) {
+if (!fs.existsSync("./package.json")) {
     console.log('\x1b[41mError : "./package.json" was not found.\x1b[0m');
     return;
 }
 
-let package = fs.readFileSync('./package.json');
+let package = fs.readFileSync("./package.json");
 
 try {
     package = JSON.parse(package);
@@ -15,7 +15,7 @@ try {
     return;
 }
 
-const types = ['section', 'wwobject', 'plugin'];
+const types = ["section", "wwobject", "plugin"];
 if (!package.type) {
     console.log('\x1b[41mError : "type" not present in package.json.\x1b[0m');
     console.log('\x1b[41mShould be one of : "section", "wwobject", "plugin".\x1b[0m');
@@ -26,16 +26,20 @@ if (types.indexOf(package.type.toLowerCase()) === -1) {
     return;
 }
 
-
-
-if (fs.existsSync('./ww-config.json')) {
+if (fs.existsSync("./ww-config.json")) {
     console.log('\x1b[44m"./ww-config.js" already exists.\x1b[0m');
-}
-else {
+} else {
     if (package.type.toLowerCase() == "wwobject") {
-        fs.writeFileSync("./ww-config.json",
+        fs.writeFileSync(
+            "./ww-config.json",
             `{
     "componentPath": "./src/wwObject.vue",
+    "meta": {
+        "displayName": {
+            "en": "DISPLAY_NAME",
+            "fr": "DISPLAY_NAME"
+        }
+    }
     "content": {
         "type": "${package.name}",
         "data": {
@@ -45,12 +49,14 @@ else {
     },
     "cmsOptions": {
     }
-}`);
-    }
-    else {
-        fs.writeFileSync("./ww-config.json",
+}`
+        );
+    } else {
+        fs.writeFileSync(
+            "./ww-config.json",
             `{
     "componentPath": "./src/section.vue"
-}`);
+}`
+        );
     }
 }
