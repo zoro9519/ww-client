@@ -91,19 +91,12 @@ const version = '__VERSION__';
 wwLib.wwPlugins.add(name, plugin.init)
 `;
 } else {
-    let wwObjectContent =
-        package.type.toLowerCase() != "wwobject"
-            ? ""
-            : `
-        wwLib.wwObject.register({
-            content: ${JSON.stringify(content)},
-            meta: ${JSON.stringify(meta)},
-            upsales: ${JSON.stringify(upsales)},
-            /* wwManager:start */
-            cmsOptions: ${JSON.stringify(cmsOptions)}
-            /* wwManager:end */
-        });
-`;
+    let registerComponent = "";
+    if (package.type.toLowerCase() === "section") {
+        registerComponent = `wwLib && wwLib.wwSection && wwLib.wwSection.register && wwLib.wwSection.register(${JSON.stringify(config)});`;
+    } else if (package.type.toLowerCase() === "wwobject") {
+        registerComponent = `wwLib && wwLib.wwObject && wwLib.wwObject.register && wwLib.wwObject.register(${JSON.stringify(config)});`;
+    }
 
     indexContent = `import component from '../../../${componentPath}'
 
@@ -113,7 +106,7 @@ const version = '__VERSION__';
 const addComponent = function () {
     if (window.vm) {
 
-        ${wwObjectContent}
+        ${registerComponent}
 
         window.vm.addComponent({
             name: name,
