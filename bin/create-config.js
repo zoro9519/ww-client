@@ -29,25 +29,16 @@ if (types.indexOf(package.type.toLowerCase()) === -1) {
 if (fs.existsSync("./ww-config.json")) {
     console.log('\x1b[44m"./ww-config.js" already exists.\x1b[0m');
 } else {
-    if (package.type.toLowerCase() == "wwobject") {
+    if (package.type.toLowerCase() === "section" || package.type.toLowerCase() === "wwobject") {
         fs.writeFileSync(
             "./ww-config.json",
             `{
-    "componentPath": "./src/wwObject.vue",
-    "meta": {
-        "displayName": {
-            "en": "DISPLAY_NAME",
-            "fr": "DISPLAY_NAME"
+    "componentPath": "./src/wwMyComponent.vue",
+    "editor": {
+        "label": {
+            "en": "My Component",
+            "fr": "Mon Composant"
         }
-    }
-    "content": {
-        "type": "${package.name}",
-        "data": {
-        }
-    },
-    "upsales": {
-    },
-    "cmsOptions": {
     }
 }`
         );
@@ -55,7 +46,7 @@ if (fs.existsSync("./ww-config.json")) {
         fs.writeFileSync(
             "./ww-config.json",
             `{
-    "componentPath": "./src/section.vue"
+    "componentPath": "./src/wwMyComponent.vue"
 }`
         );
     }
