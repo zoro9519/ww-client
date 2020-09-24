@@ -75,58 +75,59 @@ if (fs.existsSync(tempIndexJs)) {
     fs.unlinkSync(tempIndexJs);
 }
 
-const content = config.content || {};
-const upsales = config.upsales || {};
-const meta = config.meta || {};
-const cmsOptions = config.cmsOptions || {};
-
 let indexContent = "";
 
 if (package.type.toLowerCase() == "plugin") {
     indexContent = `import plugin from '../../../${componentPath}'
 
-const name = "__NAME__";
-const version = '__VERSION__';
+        const name = "__NAME__";
+        const version = '__VERSION__';
 
-wwLib.wwPlugins.add(name, plugin.init)
-`;
+        wwLib.wwPlugins.add(name, plugin.init)
+    `;
 } else {
-    let registerComponent = "";
+    let wwService = "";
     if (package.type.toLowerCase() === "section") {
-        registerComponent = `wwLib && wwLib.wwSection && wwLib.wwSection.register && wwLib.wwSection.register(${JSON.stringify(config)});`;
+        wwService = "wwSection";
     } else if (package.type.toLowerCase() === "wwobject") {
-        registerComponent = `wwLib && wwLib.wwObject && wwLib.wwObject.register && wwLib.wwObject.register(${JSON.stringify(config)});`;
+        wwService = "wwObject";
     }
+
+    config.type = package.type;
 
     indexContent = `import component from '../../../${componentPath}'
 
-const name = "__NAME__";
-const version = '__VERSION__';
+        const name = "__NAME__";
+        const version = '__VERSION__';
 
-const addComponent = function () {
-    if (window.vm) {
+        const addComponent = function () {
+            if (window.vm) {
 
-        ${registerComponent}
-
-        window.vm.addComponent({
-            name: name,
-            version: version,
-            content: component
-        });
-
-        return true;
-    }
-    return false;
-}
-
-if (!addComponent()) {
-    const iniInterval = setInterval(function () {
-        if (addComponent()) {
-            clearInterval(iniInterval);
+                if(wwLib && wwLib.wwComponents && wwLib.wwComponents.register){
+                    wwLib.wwComponents.register(${JSON.stringify(config)})
+                }
+                else {
+                    wwLib && wwLib.${wwService} && wwLib.${wwService}.register && wwLib.${wwService}.register(${JSON.stringify(config)});
+                }
+            
+                window.vm.addComponent({
+                    name: name,
+                    version: version,
+                    content: component
+                });
+            
+                return true;
+            }
+            return false;
         }
-    }, 10);
-}
-`;
+
+        if (!addComponent()) {
+            const iniInterval = setInterval(function () {
+                if (addComponent()) {
+                    clearInterval(iniInterval);
+                }
+            }, 10);
+        }`;
 }
 
 fs.writeFileSync(tempIndexJs, indexContent);

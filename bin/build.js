@@ -83,42 +83,48 @@ if (package.type.toLowerCase() === "plugin") {
     wwLib.wwPlugins.add(name, plugin.init)
     `;
 } else {
-    let registerComponent = "";
+    let wwService = "";
     if (package.type.toLowerCase() === "section") {
-        registerComponent = `wwLib && wwLib.wwSection && wwLib.wwSection.register && wwLib.wwSection.register(${JSON.stringify(config)});`;
+        wwService = "wwSection";
     } else if (package.type.toLowerCase() === "wwobject") {
-        registerComponent = `wwLib && wwLib.wwObject && wwLib.wwObject.register && wwLib.wwObject.register(${JSON.stringify(config)});`;
+        wwService = "wwObject";
     }
+
+    config.type = package.type;
 
     indexContent = `import component from '../../../${componentPath}'
 
-    const name = "__NAME__";
-    const version = '__VERSION__';
+        const name = "__NAME__";
+        const version = '__VERSION__';
 
-    const addComponent = function () {
-        if (window.vm) {
-
-            ${registerComponent}
-
-            window.vm.addComponent({
-                name: name,
-                version: version,
-                content: component
-            });
-
-            return true;
-        }
-        return false;
-    }
-
-    if (!addComponent()) {
-        const iniInterval = setInterval(function () {
-            if (addComponent()) {
-                clearInterval(iniInterval);
+        const addComponent = function () {
+            if (window.vm) {
+                                
+                if(wwLib && wwLib.wwComponents && wwLib.wwComponents.register){
+                    wwLib.wwComponents.register(${JSON.stringify(config)})
+                }
+                else {
+                    wwLib && wwLib.${wwService} && wwLib.${wwService}.register && wwLib.${wwService}.register(${JSON.stringify(config)});
+                }
+            
+                window.vm.addComponent({
+                    name: name,
+                    version: version,
+                    content: component
+                });
+            
+                return true;
             }
-        }, 10);
-    }
-    `;
+            return false;
+        }
+
+        if (!addComponent()) {
+            const iniInterval = setInterval(function () {
+                if (addComponent()) {
+                    clearInterval(iniInterval);
+                }
+            }, 10);
+        }`;
 }
 
 fs.writeFileSync(tempIndexJs, indexContent);
