@@ -1,6 +1,12 @@
 #! /usr/bin/env node
 const fs = require("fs");
 
+//TODO : Remove this
+let newConfig = false;
+if (process.argv.indexOf("new") !== -1) {
+    newConfig = true;
+}
+
 if (!fs.existsSync("./package.json")) {
     console.log('\x1b[41mError : "./package.json" was not found.\x1b[0m');
     return;
@@ -29,25 +35,40 @@ if (types.indexOf(package.type.toLowerCase()) === -1) {
 if (fs.existsSync("./ww-config.json")) {
     console.log('\x1b[44m"./ww-config.js" already exists.\x1b[0m');
 } else {
-    if (package.type.toLowerCase() === "section" || package.type.toLowerCase() === "wwobject") {
-        fs.writeFileSync(
-            "./ww-config.json",
-            `{
-    "componentPath": "./src/wwMyComponent.vue",
-    "editor": {
-        "label": {
-            "en": "My Component",
-            "fr": "Mon Composant"
+    if (!newConfig) {
+        if (package.type.toLowerCase() == "wwobject") {
+            fs.writeFileSync(
+                "./ww-config.json",
+                `{` +
+                    `\n    "componentPath": "./src/wwObject.vue",` +
+                    `\n    "meta": {` +
+                    `\n        "displayName": {` +
+                    `\n            "en": "DISPLAY_NAME",` +
+                    `\n            "fr": "DISPLAY_NAME"` +
+                    `\n        }` +
+                    `\n    },` +
+                    `\n    "content": {` +
+                    `\n        "type": "${package.name}",` +
+                    `\n        "data": {` +
+                    `\n        }` +
+                    `\n    },` +
+                    `\n    "upsales": {` +
+                    `\n    },` +
+                    `\n    "cmsOptions": {` +
+                    `\n    }` +
+                    `\n}`
+            );
+        } else {
+            fs.writeFileSync("./ww-config.json", `{` + `\n    "componentPath": "./src/section.vue"` + `\n}`);
         }
-    }
-}`
-        );
     } else {
-        fs.writeFileSync(
-            "./ww-config.json",
-            `{
-    "componentPath": "./src/wwMyComponent.vue"
-}`
-        );
+        if (package.type.toLowerCase() === "section" || package.type.toLowerCase() === "wwobject") {
+            fs.writeFileSync(
+                "./ww-config.json",
+                `{` + `\n    "componentPath": "./src/wwMyComponent.vue",` + `\n    "editor": {` + `\n        "label": {` + `\n            "en": "My Component",` + `\n            "fr": "Mon Composant"` + `\n        }` + `\n    }` + `\n}`
+            );
+        } else {
+            fs.writeFileSync("./ww-config.json", `{` + `\n    "componentPath": "./src/wwMyComponent.vue"` + `\n}`);
+        }
     }
 }
